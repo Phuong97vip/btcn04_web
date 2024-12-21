@@ -1,0 +1,350 @@
+<script src="socket.io/socket.io.js"></script>
+
+<style>
+
+    .chatBox {
+        width: 300px;
+        height: 400px;
+        position: fixed;
+        right: 0;
+        bottom: 0;
+        transition: 0.2s ease-in;
+    }
+
+    .toggleShow {
+        display: none;
+    }
+
+    .hideChatBox {
+        height: 50px;
+    }
+
+    #cont .btn {
+        font-size: 2rem;
+        width: 100px;
+        height: 100px;
+        cursor: pointer;
+        margin: 0;
+        background-color: rgb(206, 203, 203);
+        border-radius: 10px;
+    }
+
+    #cont .btn:hover {
+        background-color: rgb(226, 228, 230);
+    }
+</style>
+
+<div class="container-fluid">
+    <div class="row mb-3">
+        {{> GamePartials/nav}}
+    </div>
+    <div class="row mb-3   g-2 text-center" id="createRow">
+        <div class="col-12 text-center ">
+            <h1>CREATE MATCH</h1>
+        </div>
+        <div class="col-12 d-flex justify-content-center align-items-center">
+            <select id="matchOption" class="form-select  w-50" aria-label="Default select example">
+                <option selected value="3">3x3</option>
+                <option value="4">4x4</option>
+            </select>
+        </div>
+        <div class="col-12">
+            <button id="createButton" class="btn btn-success w-25">Create</button>
+            <button id="cancelButton" class="btn btn-danger d-none w-25">Cancel</button>
+        </div>
+    </div>
+    <div class="row  g-2 text-center d-none  " id="loadingRow">
+        <div class="col-12 text-center ">
+            <img src="/image/loading.gif" class="img-fluid rounded-top" alt="" />
+            <p>Waiting for player2...</p>
+        </div>
+    </div>
+    <div class="row d-none  g-2 text-center " id="playingRow3">
+        <div class="col-12 text-center">Your are playing on <span id="value"></span> </div>
+        <div class="col-12 text-center">Turn: <span id="turn"></span> </div>
+        <div class="col-6 text-center">OPP: <span id="opp"></span></div>
+        <div id="bigcont">
+            <div id="cont">
+                <div class="row justify-content-center">
+                    <button id="btn1" class="btn"></button>
+                    <button id="btn2" class="btn"></button>
+                    <button id="btn3" class="btn"></button>
+                </div>
+                <div class="row justify-content-center">
+                    <button id="btn4" class="btn"></button>
+                    <button id="btn5" class="btn"></button>
+                    <button id="btn6" class="btn"></button>
+                </div>
+                <div class="row justify-content-center">
+                    <button id="btn7" class="btn"></button>
+                    <button id="btn8" class="btn"></button>
+                    <button id="btn9" class="btn"></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row d-none " id="chatRow">
+        <div class="chatBox">
+            <div class="card h-100">
+                <h4 class="card-header chatBoxHeader  bg-primary text-light" style="height: 50px;">Chat
+                </h4>
+                <div class="card-body chatBoxBody " style="height: 90%;">
+                    <div class="chatContent overflow-auto" style="height: 90%;">
+                    </div>
+                    <form class="d-flex justify-content-between" style="height: 10%;">
+                        <input class="inputmss " placeholder="Enter your mss..." type="text">
+                        <button class="sendmss btn btn-primary">send</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row d-none  g-2 text-center " id="playingRow4">
+        <div class="col-12 text-center">Your are playing on <span id="value"></span> </div>
+        <div class="col-12 text-center">Turn: <span id="turn"></span> </div>
+        <div class="col-6 text-center">OPP: <span id="opp"></span></div>
+        <div id="bigcont">
+            <div id="cont">
+                <div class="row justify-content-center">
+                    <button id="btn1" class="btn"></button>
+                    <button id="btn2" class="btn"></button>
+                    <button id="btn3" class="btn"></button>
+                    <button id="btn4" class="btn"></button>
+                </div>
+                <div class="row justify-content-center">
+                    <button id="btn5" class="btn"></button>
+                    <button id="btn6" class="btn"></button>
+                    <button id="btn7" class="btn"></button>
+                    <button id="btn8" class="btn"></button>
+                </div>
+                <div class="row justify-content-center">
+                    <button id="btn9" class="btn"></button>
+                    <button id="btn10" class="btn"></button>
+                    <button id="btn11" class="btn"></button>
+                    <button id="btn12" class="btn"></button>
+                </div>
+                <div class="row justify-content-center">
+                    <button id="btn13" class="btn"></button>
+                    <button id="btn14" class="btn"></button>
+                    <button id="btn15" class="btn"></button>
+                    <button id="btn16" class="btn"></button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const user = {
+        id: {{ user.id }},
+    username: '{{user.username}}',
+        nickname: '{{user.nickname}}',
+            fullname: '{{user.fullname}}'
+    }
+    {{#if matchID }}
+    let room = {{ matchID }};
+    {{else }}
+    let room = Math.floor(Math.random() * (9999999 - 1000000 + 1)) + 1000000;
+    {{/if}}
+
+
+</script>
+
+
+<script>
+        let winConditions;
+        let createButton = $('#createButton');
+        let createRow = $('#createRow');
+        let loadingRow = $('#loadingRow');
+        let playingRow3 = $('#playingRow3');
+        let cancelButton = $('#cancelButton')
+        let matchOption = $('#matchOption')
+        let playingRow4 = $('#playingRow4')
+        let chatRow = $('#chatRow')
+
+        const socket = io('https://localhost:21534');
+        socket.emit('join', room);
+
+        socket.on('connect', function () {
+            socket.emit('goOnline', user);
+        });
+
+        socket.on('find', data => {
+            createRow.addClass('d-none');
+            loadingRow.addClass('d-none');
+            chatRow.removeClass('d-none')
+            if (data.type == 3) {
+                playingRow3.removeClass('d-none');
+                playingRow4.empty();
+                winConditions = [
+                    ['btn1', 'btn2', 'btn3'],
+                    ['btn4', 'btn5', 'btn6'],
+                    ['btn7', 'btn8', 'btn9'],
+                    ['btn1', 'btn4', 'btn7'],
+                    ['btn2', 'btn5', 'btn8'],
+                    ['btn3', 'btn6', 'btn9'],
+                    ['btn1', 'btn5', 'btn9'],
+                    ['btn3', 'btn5', 'btn7']
+                ];
+            } else if (data.type == 4) {
+                playingRow4.removeClass('d-none');
+                playingRow3.empty();
+                winConditions = [
+                    ['btn1', 'btn2', 'btn3', 'btn4'],
+                    ['btn5', 'btn6', 'btn7', 'btn8'],
+                    ['btn9', 'btn10', 'btn11', 'btn12'],
+                    ['btn13', 'btn14', 'btn15', 'btn16'],
+                    ['btn1', 'btn5', 'btn9', 'btn13'],
+                    ['btn2', 'btn6', 'btn10', 'btn14'],
+                    ['btn3', 'btn7', 'btn11', 'btn15'],
+                    ['btn4', 'btn8', 'btn12', 'btn16'],
+                    ['btn1', 'btn6', 'btn11', 'btn16'],
+                    ['btn4', 'btn7', 'btn10', 'btn13']
+                ];
+            }
+            setClick()
+            let oppName
+            let value
+            data.p1.info.id == `${user.id}` ? oppName = data.p2.info.nickname : oppName = data.p1.info.nickname;
+            data.p1.info.id == `${user.id}` ? value = data.p1.value : value = data.p2.value;
+            $('#turn').text(data.p1.value)
+            $('#value').text(value);
+            $('#opp').text(oppName);
+        })
+
+        socket.on('gameOver', data => {
+            if (data.winner == 'Draw') {
+                alert("Draw!!!!")
+                window.location.assign('https://localhost:21534/gamePage');
+            } else if (data.winner == user.id) {
+                alert("Win!!!!")
+                window.location.assign('https://localhost:21534/gamePage');
+            } else {
+                alert("Lose!!!!")
+                window.location.assign('https://localhost:21534/gamePage');
+            }
+        })
+
+        socket.on('playing', data => {
+            $('#turn').text(`${data.newTurn}`)
+            document.getElementById(`${data.btn}`).innerText = `${data.value}`;
+            document.getElementById(`${data.btn}`).disabled = true;
+            document.getElementById(`${data.btn}`).style.color = "black";
+            gameOver();
+        })
+
+        window.addEventListener('beforeunload', (event) => {
+            let winner = $('#value').text() == 'X' ? 'O' : 'X';
+            socket.emit('gameOver', { room: room, winnerValue: winner });
+            socket.emit('cancelCreate', room);
+            socket.emit('offline', user);
+            socket.disconnect();
+        });
+
+        createButton.on('click', (e) => {
+            loadingRow.removeClass('d-none');
+            createButton.addClass('d-none');
+            cancelButton.removeClass('d-none');
+            let data = {
+                room: room,
+                player: user,
+                type: matchOption.val(),
+            }
+            socket.emit('join', room);
+            socket.emit('find', data)
+        })
+
+        cancelButton.on('click', (e) => {
+            loadingRow.addClass('d-none');
+            createButton.removeClass('d-none');
+            cancelButton.addClass('d-none');
+            socket.emit('cancelCreate', room);
+        })
+
+        const setClick = () => {
+            document.querySelectorAll("#cont .btn").forEach(e => {
+                e.addEventListener("click", function () {
+                    let value = $('#value').text();
+                    socket.emit("playing", { value: value, id: e.id, user: user, room: room })
+                })
+            })
+        }
+
+        const gameOver = () => {
+            let btn = $('#cont .btn');
+            let xBtn = [];
+            let oBtn = [];
+            btn.each((i, e) => {
+                if ($(e).text() == 'X') {
+                    xBtn.push($(e).attr('id'));
+                } else if ($(e).text() == 'O') {
+                    oBtn.push($(e).attr('id'));
+                }
+            })
+
+            let win = false;
+            if ($('#turn').text() == 'X') {
+                for (const item of winConditions) {
+                    var isSubset = item.every(val => oBtn.includes(val));
+                    if (isSubset) {
+                        win = true;
+                        if ($('#value').text() == $('#turn').text()) socket.emit('gameOver', { room: room, winnerValue: 'O' })
+                        return win;
+                    }
+                }
+            } else if ($('#turn').text() == 'O') {
+                for (const item of winConditions) {
+                    var isSubset = item.every(val => xBtn.includes(val));
+                    if (isSubset) {
+                        win = true;
+                        if ($('#value').text() == $('#turn').text()) socket.emit('gameOver', { room: room, winnerValue: 'X' })
+                        return win;;
+                    }
+                }
+            }
+            if (xBtn.length + oBtn.length == 9 || xBtn.length + oBtn.length == 16) {
+                if ($('#value').text() == $('#turn').text()) socket.emit('gameOver', { room: room, winnerValue: 'draw' })
+                return true;
+            }
+        }
+
+        socket.on('directMss', data => {
+            if (data.user.id != user.id) {
+                $(`.chatContent`).append(`<div class=" mb-3 text-start">${data.user.nickname}: <button  style="max-width: 50%;" class=" text-start btn btn-primary disabled" >${data.mss}</button></div>`)
+            }
+            $(`.chatContent`).scrollTop($(`.chatContent`)[0].scrollHeight);
+        })
+
+
+        $('.sendmss').on('click', (e) => {
+            e.preventDefault();
+            if ($('.inputmss').val() != null && $('.inputmss').val() != '') {
+                $(`.chatContent`).append(`<div class=" mb-3 text-end"><button  style="max-width: 50%;" class=" text-start btn btn-primary disabled" >${$('.inputmss').val()}</button></div>`)
+                socket.emit('directMss', { user: user,room: room, mss: $('.inputmss').val() });
+                $(`.chatContent`).scrollTop($(`.chatContent`)[0].scrollHeight);
+                $('.inputmss').val('');
+            }
+        })
+
+
+        $('.chatBoxHeader').on('click', (e) => {
+            $('.chatBoxBody').toggleClass('toggleShow');
+            $('.chatBox').toggleClass('hideChatBox')
+        })
+
+
+
+</script>
+<script>
+        {{#if matchID }}
+        let data = {
+            room: room,
+            player: user,
+            type: matchOption.val(),
+        }
+        socket.emit('find', data)
+        {{/if}}
+
+</script>

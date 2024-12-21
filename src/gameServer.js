@@ -99,6 +99,82 @@ io.on('connection', socket => {
         const  {user,room,mss} = data;
         socket.to(room).emit('directMss',data);
     })
+
+    socket.on('gameOver', async (data) => {
+        const match = playingMatch.find(room => room.id == data.room);
+        if(match) {
+            if(data.winnerValue == 'draw') {
+                await User.UpdateScore(match.p1.info.id,1)
+                await User.UpdateScore(match.p2.info.id,1)
+                io.to(data.room).emit('gameOver',{winner: "Draw"})
+                playingMatch = playingMatch.filter(room => room.id != data.room);
+            } else if(data.winnerValue == 'O') {
+                await User.UpdateScore(match.p1.info.id,2)
+                io.to(data.room).emit('gameOver',{winner: match.p1.info.id})
+                playingMatch = playingMatch.filter(room => room.id != data.room);
+            } else if(data.winnerValue == 'X') {
+                await User.UpdateScore(match.p2.info.id,2)
+                io.to(data.room).emit('gameOver',{winner: match.p2.info.id})
+                playingMatch = playingMatch.filter(room => room.id != data.room);
+            }
+           
+        }
+    })
+
+    socket.on('cancelCreate',data => {
+        waitingMatch = waitingMatch.filter(room => room.id != data)
+        io.emit('getMatch', {
+            waitingMatch: waitingMatch,
+            playingMatch: playingMatch
+        });
+    })
+
+    socket.on('playing', data => {
+        const match = playingMatch.find(room => room.id == data.room)
+        let turnValue = match.sum % 2 == 0 ? 'X' : 'O';
+        newTurn = turnValue == 'O' ? 'X' : 'O';
+        if (data.value == turnValue) {
+            match.sum += 1;
+            io.to(match.id).emit('playing', { btn: data.id, value: data.value, newTurn: newTurn })
+        }
+    })
+
+    socket.on('find', data => {
+        if (waitingMatch.find(room => room.id == data.room) == undefined) {
+            let room = {
+                id: data.room,
+                player: [],
+                type: data.type
+            }
+            waitingMatch.push(room);
+        }
+        if (waitingMatch.find(room => room.id == data.room).player.find(player => player.id == data.player.id) == undefined) {
+            waitingMatch.find(room => room.id == data.room).player.push(data.player);
+        }
+        if (waitingMatch.find(room => room.id == data.room).player.length >= 2) {
+            let match = {
+                id: waitingMatch.find(room => room.id == data.room).id,
+                p1: {
+                    info: waitingMatch.find(room => room.id == data.room).player[0],
+                    value: 'O'
+                },
+                p2: {
+                    info: waitingMatch.find(room => room.id == data.room).player[1],
+                    value: 'X'
+                },
+                sum: 1,
+                type: waitingMatch.find(room => room.id == data.room).type
+            }
+            playingMatch.push(match);
+            waitingMatch = waitingMatch.filter(room => room.id != data.room);
+            io.to(data.room).emit('find', match);
+        }
+
+        io.emit('getMatch', {
+            waitingMatch: waitingMatch,
+            playingMatch: playingMatch
+        });
+    })
      
 })
 

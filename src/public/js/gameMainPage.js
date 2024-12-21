@@ -27,6 +27,24 @@ socket.on('message', data => {
     $(`.chatContent`).scrollTop($(`.chatContent`)[0].scrollHeight);
 })
 
+let matchList = $('#matchList')
+socket.on('getMatch', data => {
+    matchList.empty();
+    for (const match of data.waitingMatch) {
+        matchList.append(`<div class="d-flex justify-content-between">
+                                    <p>Room: ${match.id}</p>
+                                    <a class="btn btn-warning joinButton" href="/match?id=${match.id}" room=" ${match.id}">join</a>
+                                </div>`)
+    }
+    for (const match of data.playingMatch) {
+        matchList.append(`<div class="d-flex justify-content-between">
+                                    <p>Room: ${match.id}</p>
+                                    <button class="btn btn-success disabled" room=" ${match.id}">Playing</button>
+                                </div>`)
+    }
+   
+})
+
 socket.on('listMss', listMss => {
     $(`.chatContent`).empty();
     for (const data of listMss) {
