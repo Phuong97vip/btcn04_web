@@ -1,0 +1,67 @@
+<script src="socket.io/socket.io.js"></script>
+
+<div class="container-fluid">
+    <div class="row mb-3">
+        {{> GamePartials/nav}}
+    </div>
+
+    <div class="row   ">
+        <div class="mb-4">
+                <label for="Score" class="form-label">Score: {{user.score}}</label>
+            </div>
+        <form action="/api/user/update" method="post" enctype="multipart/form-data" class="profileForm">
+            <div class="mb-4">
+                <label for="fullname" class="form-label">Full name</label>
+                <input required name="fullname" type="text" class="form-control w-100" id="fullname"
+                    value="{{user.fullname}}" placeholder="Enter your fullname">
+            </div>
+            <div class="mb-4">
+                <label for="nickname" class="form-label">Nick name</label>
+                <input required name="nickname" type="text" class="form-control w-100" id="nickname"
+                    value="{{user.nickname}}" placeholder="Enter your nickname">
+            </div>
+            <div class="mb-3 addItem ">
+                <label for="image" class="form-label">Image</label>
+                <div class="input-group mb-3 px-2 py-2 rounded-pill bg-white shadow-sm">
+                    <input required name="image" id="image" accept=".jpg" id="upload" type="file"
+                        onchange="readURL(this);" class="form-control border-0">
+                </div>
+
+                <p class="font-italic text-white text-center">The image uploaded will be rendered
+                    inside the
+                    box below.</p>
+                <div class="image-area mt-4"><img id="imageResult" src="/image/{{user.image}}" alt=""
+                        class="img-fluid rounded shadow-sm mx-auto d-block"></div>
+            </div>
+            <input type="hidden" name="id" value="{{user.id}}">
+            <button type="submit" class="btn btn-success">Save</button>
+        </form>
+    </div>
+
+
+</div>
+
+<script>
+    const user = {
+        id: {{ user.id }},
+    username: '{{user.username}}',
+        nickname: '{{user.nickname}}',
+            fullname: '{{user.fullname}}'
+    }
+</script>
+
+
+<script>
+    const room = user.id;
+
+    const socket = io('https://localhost:21534');
+    socket.on('connect', function () {
+        socket.emit('goOnline', user);
+    });
+
+    window.addEventListener('beforeunload', (event) => {
+        socket.emit('offline', user);
+        socket.disconnect();
+    });
+
+</script>
