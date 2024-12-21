@@ -1,0 +1,54 @@
+<script src="socket.io/socket.io.js"></script>
+
+
+
+<div class="container-fluid">
+    <div class="row mb-3">
+        {{> GamePartials/nav}}
+    </div>
+    <div class="row mb-3">
+        <div class="col-3 vh-100">
+            <div class="card h-100 text-start">
+                <h4 class="card-header bg-primary text-light">Danh sách online</h4>
+                <div class="card-body ">
+                    <div class="onlineTable">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-9">
+            <div class="card h-100 text-start">
+                <h4 class="card-header bg-primary text-light">Danh sách bàn chơi</h4>
+                <div class="card-body " id="matchList">
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="chatBox">
+            <div class="card h-100">
+                <h4 class="card-header chatBoxHeader  bg-primary text-light" style="height: 50px;">Chat
+                </h4>
+                <div class="card-body chatBoxBody " style="height: 90%;">
+                    <div class="chatContent overflow-auto" style="height: 90%;">
+                    </div>
+                    <form class="d-flex justify-content-between" style="height: 10%;">
+                        <input class="inputmss " placeholder="Enter your mss..." type="text">
+                        <button class="sendmss btn btn-primary">send</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    const user = {
+        id: {{ user.id }},
+    username: '{{user.username}}',
+        nickname: '{{user.nickname}}',
+            fullname: '{{user.fullname}}'
+    }
+</script>

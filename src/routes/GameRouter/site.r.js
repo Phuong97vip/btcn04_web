@@ -5,6 +5,7 @@ const router = express.Router();
 
 
 router.use('*',AuthCheck);
+router.get('/gamepage',SiteController.GetGamePage);
 
 
 
