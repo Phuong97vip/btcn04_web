@@ -1,0 +1,91 @@
+<div class="container-fluid">
+    <div class="bg-light row justify-content-center align-items-center g-2 m-5">
+        <div class="col-7 content">
+            <div class=" m-5 loginContent">
+                <p class="h1 mb-5">Welcome to My Oauth Server</p>
+                <form action="/login" method="POST" class="loginForm">
+                    {{#if mss}}
+                    <div class="mb-4">
+                        <div class="text-danger fs-5">{{mss}}</div>
+                    </div>
+                    {{/if}}
+                    <div class="mb-4">
+                        <label for="loginUsername" class="form-label">Username</label>
+                        <input name="username" type="text" class="form-control w-75" id="loginUsername" required
+                            placeholder="Enter username">
+                    </div>
+                    <div class="mb-4">
+                        <label for="loginPassword" class="form-label ">Password</label>
+                        <input name="password" type="password" id="loginPassword" class="form-control  w-75" required
+                            placeholder="Enter password" />
+                    </div>
+                    <div class="mb-4">
+                        <input name="Remember" class="form-check-input me-2" type="checkbox" value="true"
+                            id="rememberMe" />
+                        <label class="form-check-label" for="rememberMe">
+                            Remember me
+                        </label>
+                    </div>
+                    <div class="mb-4 createAccount">
+                        <a class="createAccountLink" onclick="changeForm()">Create an account</a>
+                    </div>
+
+                    <div class="mb-4">
+                        <button type="submit" class="btn rounded-5 bgPrimary text-light w-25 loginButton">Log
+                            in</button>
+                    </div>
+                </form>
+            </div>
+            <div class=" m-5  signupContent d-none">
+                <div class="heading text-center mb-5">
+                    <p class="h1 mb-5 text-danger errMss d-none">Signup Error!</p>
+                    <p class="h2">Create an account</p>
+                    <p class="fs-8">Already have an ccount? <a onclick="changeForm()">Log in</a> </p>
+                </div>
+                <form class="m-5 signupForm">
+                    <div class="mb-4">
+                        <label for="signupUsername" class="form-label">Username</label>
+                        <input type="text" class="form-control w-100 " id="signupUsername"
+                            placeholder="Enter your username">
+                    </div>
+                    <div class="mb-4">
+                        <label for="signupPassword" class="form-label ">Password</label>
+                        <input type="password" id="signupPassword" class="form-control  w-100"
+                            placeholder="Enter your password" />
+                    </div>
+                    <div class="mb-4">
+                        <label for="signupFullname" class="form-label">Full name</label>
+                        <input type="text" class="form-control w-100" id="signupFullname"
+                            placeholder="Enter your fullname">
+                    </div>
+                    <div class="mb-4">
+                        <label for="nickname" class="form-label">Nick name</label>
+                        <input type="text" class="form-control w-100" id="nickname" placeholder="Enter your nickname">
+                    </div>
+                    <div class="mb-4">
+                        <button type="submit" class="btn rounded-5 bgPrimary text-light w-100 signupButton">Create an
+                            account</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="col-5 h-100 m-0 p-0">
+            <div id="carousel" class="carousel slide h-100" data-bs-ride="carousel">
+                <div class="carousel-inner h-100">
+                    <div class="carousel-item active loginImage h-100">
+                        <img src="https://i0.wp.com/www.thearmchaircritic.org/wp-content/uploads/2019/10/featured.png?fit=2400%2C1596&ssl=1"
+                            class=" w-100" alt="...">
+                    </div>
+                    <div class="carousel-item loginImage h-100">
+                        <img src="https://blogs.blackberry.com/content/dam/blogs-blackberry-com/images/blogs/2020/04/ibb-042820-authentication-875x530.jpg"
+                            class=" w-100" alt="...">
+                    </div>
+                    <div class="carousel-item loginImage h-100">
+                        <img src="https://th.bing.com/th/id/R.2d20a08dec5ba892cb3a11a470118ee4?rik=ztNPhjmNNs2s3A&pid=ImgRaw&r=0"
+                            class=" w-100" alt="...">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

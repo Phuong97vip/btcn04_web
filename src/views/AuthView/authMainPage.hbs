@@ -1,0 +1,100 @@
+<div class="container-fluid">
+    <div class="row mb-3">
+        {{> AuthPartials/nav}}
+    </div>
+
+    <div class="row" style="min-height:  75vh;">
+        <div class="col-3 ">
+            <div class="card h-100">
+                <div class="card-body">
+                    <!-- Tab navs -->
+                    <div class="nav flex-column nav-pills text-center" id="v-pills-tab" role="tablist"
+                        aria-orientation="vertical">
+                        <a class="nav-link active text-start" id="v-pills-link1-tab" data-bs-toggle="pill"
+                            href="#v-pills-link1" role="tab" aria-controls="v-pills-link1" aria-selected="true"><i
+                                class="fa-regular fa-address-card me-3"></i>Profile</a>
+                        <a class="nav-link text-start" id="v-pills-link2-tab" data-bs-toggle="pill"
+                            href="#v-pills-link2" role="tab" aria-controls="v-pills-link2" aria-selected="false"><i
+                                class="fa-solid fa-gear me-3"></i>Credential</a>
+                    </div>
+                    <!-- Tab navs -->
+                </div>
+            </div>
+        </div>
+        <div class="col-9">
+            <div class="card h-100">
+                <div class="card-body">
+                    <!-- Tab content -->
+                    <div class="tab-content" id="v-pills-tabContent">
+                        <div class="tab-pane fade show active" id="v-pills-link1" role="tabpanel"
+                            aria-labelledby="v-pills-link1-tab">
+                            <form action="/api/user/update" method="post" enctype="multipart/form-data"
+                                class="profileForm">
+                                <div class="mb-4">
+                                    <label for="fullname" class="form-label">Full name</label>
+                                    <input required name="fullname" type="text" class="form-control w-100" id="fullname"
+                                        value="{{user.fullname}}" placeholder="Enter your fullname">
+                                </div>
+                                <div class="mb-4">
+                                    <label for="nickname" class="form-label">Nick name</label>
+                                    <input required name="nickname" type="text" class="form-control w-100" id="nickname"
+                                        value="{{user.nickname}}" placeholder="Enter your nickname">
+                                </div>
+                                <div class="mb-3 addItem ">
+                                    <label for="image" class="form-label">Image</label>
+                                    <div class="input-group mb-3 px-2 py-2 rounded-pill bg-white shadow-sm">
+                                        <input required name="image" id="image" accept=".jpg" id="upload" type="file"
+                                            onchange="readURL(this);" class="form-control border-0">
+                                    </div>
+
+                                    <p class="font-italic text-white text-center">The image uploaded will be rendered
+                                        inside the
+                                        box below.</p>
+                                    <div class="image-area mt-4"><img id="imageResult" src="/image/{{user.image}}" alt=""
+                                            class="img-fluid rounded shadow-sm mx-auto d-block"></div>
+                                </div>
+                                <input type="hidden" name="id" value="{{user.id}}">
+                                <button type="submit" class="btn btn-success">Save</button>
+                            </form>
+                        </div>
+                        <div class="tab-pane fade" id="v-pills-link2" role="tabpanel"
+                            aria-labelledby="v-pills-link2-tab">
+                            <form class="credentialForm">
+                                <div class="mb-4">
+                                    <label for="clientID" class="form-label">clientID</label>
+                                    <input type="text" class="form-control w-100" id="clientID"
+                                        value="{{authInfo.clientID}}" placeholder="Enter your clientID">
+                                </div>
+                                <div class="mb-4">
+                                    <label for="clientSecret" class="form-label">clientSecret</label>
+                                    <input type="text" class="form-control w-100" id="clientSecret"
+                                        value="{{authInfo.clientSecret}}" placeholder="Enter your clientSecret">
+                                </div>
+                                <div class="mb-4 ">
+                                    <label class="form-label">Callback URL</label>
+                                    <div class="callbackTable">
+                                        {{#each authInfo.callbackURL}}
+                                        <div class="w-100 d-flex mb-1" id="{{@index}}">
+                                            <input type="text" class="form-control w-75 callBackUrlInput"
+                                                value="{{this}}" placeholder="Enter your url">
+                                            <a onclick="deleteThis({{@index}})" class="btn btn-danger">X</a>
+                                        </div>
+                                        {{/each}}
+                                    </div>
+                                    <a id="addURL" onclick="addUrl()" class="btn btn-primary">Add url</a>
+                                </div>
+                                
+                                <button type="submit" class="btn btn-success">Save</button>
+                            </form>
+                        </div>
+                    </div>
+                    <!-- Tab content -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{{!-- updatate --}}
+<script>
+    let id = {{ user.id }};
+</script>

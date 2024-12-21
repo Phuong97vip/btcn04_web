@@ -1,0 +1,76 @@
+<div class="container-fluid">
+    <div class="row vh-100 justify-content-center align-items-center g-2">
+        <div class="card text-bg-light mb-3 border-0" style="max-width: 30rem; min-height: 35rem">
+            <div class="card-header border-0"><i class="fa-solid fa-circle me-2" style="color: #04d600;"></i>Login with
+                MyOauth2</div>
+            {{#if err}}
+            <div class="card-body">
+                <div class="fs-2">Authorization Error</div>
+                <div>Required parameter is missing</div>
+                <div>{{err}}</div>
+                <a name="" id="" class="btn btn-danger" href="{{authConfig.callbackURL}}" role="button">Back</a>
+            </div>
+            {{else}}
+            {{#if hasAuth}}
+            <div class="card-body">
+                <div class="card-text text-center fw-bold fs-1 mb-3">LOGIN</div>
+                <form action="/oauth2/accept" method="post">
+                    <div class="mb-4">
+                        <h1>Đăng nhập bằng: {{user.username}}</h1>
+                        <input name="shareAvatar" class="form-check-input me-2" type="checkbox" value="true"
+                            id="shareAvatar"/>
+                        <label class="form-check-label" for="shareAvatar">
+                            Share avatar
+                        </label>
+                    </div>
+                    <div class="mb-4">
+                        <button type="submit" class="btn btn-success rounded-5 bgPrimary text-light loginButton">Accept
+                            login</button>
+                        <a name="" id="" class="btn rounded-5 btn-danger" href="{{authConfig.callbackURL}}"
+                            role="button">Back</a>
+                    </div>
+                </form>
+            </div>
+            {{else}}
+            {{!-- Login --}}
+            <div class="card-body loginForm">
+                <div class="card-text text-center fw-bold fs-1 mb-3">LOGIN</div>
+                <form action="/oauth2/login" method="post">
+                    <div class="text-danger fs-4">{{loginError}}</div>
+                    <div class="mb-4">
+                        <label for="loginUsername" class="form-label">Username</label>
+                        <input name="username" type="text" class="form-control w-100" id="loginUsername" required
+                            placeholder="Enter username">
+                    </div>
+                    <div class="mb-4">
+                        <label for="loginPassword" class="form-label ">Password</label>
+                        <input name="password" type="password" id="loginPassword" class="form-control  w-100" required
+                            placeholder="Enter password" />
+                    </div>
+                    <div class="mb-4">
+                        <a class="changeToSignup" href="https://localhost:53003/loginSignup">Sign up new account</a>
+                    </div>
+                    <div class="mb-4">
+                        <input name="Remember" class="form-check-input me-2" type="checkbox" value="true"
+                            id="rememberMe" />
+                        <label class="form-check-label" for="rememberMe">
+                            Remember me
+                        </label>
+                    </div>
+                    <div class="mb-4">
+                        <button type="submit"
+                            class="btn btn-success rounded-5 bgPrimary text-light w-25 loginButton">Login</button>
+                        <a name="" id="" class="btn btn-danger rounded-5" href="{{authConfig.callbackURL}}"
+                            role="button">Back</a>
+                    </div>
+                </form>
+            </div>
+
+            {{/if}}
+
+            {{/if}}
+        </div>
+
+    </div>
+
+</div>
