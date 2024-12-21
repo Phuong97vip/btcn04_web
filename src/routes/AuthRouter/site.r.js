@@ -7,6 +7,7 @@ const checkAuthJwt = require('../../middlewares/AuthMiddleware/CheckAuthJWT');
 
 router.use('*',checkAuthJwt,async (req, res, next) => {
     if(req.user) return next();
+    // update middleware to check if user is logged in
     return res.redirect('/loginSignup');
 })
 router.get('/mainpage', siteController.GetMainPage);
