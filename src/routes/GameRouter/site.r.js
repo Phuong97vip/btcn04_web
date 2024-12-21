@@ -8,6 +8,7 @@ router.use('*',AuthCheck);
 router.get('/gamepage',SiteController.GetGamePage);
 router.get('/match',SiteController.GetMatchPage);
 router.get('/profile',SiteController.GetProfilePage);
+router.get('/rank',SiteController.GetRankPage);
 
 
 

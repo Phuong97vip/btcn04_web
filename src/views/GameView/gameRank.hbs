@@ -1,0 +1,60 @@
+<script src="socket.io/socket.io.js"></script>
+
+<div class="container-fluid">
+    <div class="row mb-3">
+        {{> GamePartials/nav}}
+    </div>
+
+    <div class="row mb-3 justify-content-center align-items-center ">
+        <div class="col-12 fs-2 fw-bold text-center">RANK TABLE</div>
+        <div class="col-12 fs-2 fw-bold text-center">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Nickname</th>
+                        <th scope="col">score</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each userList}}
+                    <tr>
+                        <th scope="row">{{@index}}</th>
+                        <td>{{this.nickname}}</td>
+                        <td>{{this.score}}</td>
+                    </tr>
+                    {{/each}}
+                   
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+
+
+</div>
+
+<script>
+    const user = {
+        id: {{ user.id }},
+    username: '{{user.username}}',
+        nickname: '{{user.nickname}}',
+            fullname: '{{user.fullname}}'
+    }
+</script>
+
+
+<script>
+    const room = user.id;
+
+    const socket = io('https://localhost:21534');
+    socket.on('connect', function () {
+        socket.emit('goOnline', user);
+    });
+
+    window.addEventListener('beforeunload', (event) => {
+        socket.emit('offline', user);
+        socket.disconnect();
+    });
+
+</script>
