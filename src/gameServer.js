@@ -5,6 +5,7 @@ const configStaticResource = require('./configs/configStaticResource');
 const configViewEngine = require('./configs/configViewEngine');
 const configHttps = require('./configs/ConfigHttps');
 const configSession = require('./configs/configSession');
+const configPassport = require('./configs/configOauth2Passport');
 const cookieParser = require('cookie-parser');
 const User = require('./models/GameServer/user.m')
 const path = require('path');
@@ -19,6 +20,7 @@ app.use(express.json())
 app.use(cookieParser())
 configStaticResource(app, path.join(__dirname, 'public'));
 configSession(app);
+configPassport(app);
 configViewEngine(app, path.join(__dirname, 'views'));
 
 
