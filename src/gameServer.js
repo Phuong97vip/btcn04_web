@@ -35,7 +35,54 @@ app.use(require('./routes/GameRouter/site.r'));
 const server = configHttps(app, path.join(__dirname, 'certs'));
 
 
+const onlineUser = [];
+const listMassage = [];
+let waitingMatch = [];
+let playingMatch = [];
 
+const addOnlineUser = (newUser) => {
+    let hasUser = false;
+    for (const user of onlineUser) {
+        if (user.id == newUser.id) {
+            hasUser = true;
+            break;
+        }
+    }
+    if (!hasUser) onlineUser.push(newUser);
+}
+
+const remmoveOnlineUser = (user) => {
+    let index = -1;
+    for (let i = 0; i < onlineUser.length; i++) {
+        if (onlineUser[i].id == user.id) {
+            index = i;
+            break;
+        }
+    }
+    if (index > -1) onlineUser.splice(index, 1);
+}
+
+const io = require('socket.io')(server);
+
+io.on('connection', socket => {
+    socket.on('join', room => {
+        socket.join(room);
+    })
+    socket.on('offline', user => {
+        remmoveOnlineUser(user);
+        io.emit('online', onlineUser);
+    })
+    socket.on('goOnline', user => {
+        addOnlineUser(user);
+        io.emit('online', onlineUser)
+        io.emit('listMss', listMassage);
+        io.emit('getMatch', {
+            waitingMatch: waitingMatch,
+            playingMatch: playingMatch
+        });
+    })
+     
+})
 
 
 server.listen(port, () => {
