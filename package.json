@@ -5,8 +5,10 @@
     "test": "echo \"Error: no test specified\" && exit 1",
 
     "start:auth": "nodemon src/authServer.js",
+    "start:game": "nodemon src/gameServer.js",
 
-    "start": "concurrently \"npm run start:auth\""
+    "start": "concurrently \"npm run start:game\"  \"npm run start:auth\""
+
 
   },
 
