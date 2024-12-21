@@ -40,6 +40,14 @@ const listMassage = [];
 let waitingMatch = [];
 let playingMatch = [];
 
+const addMessage = (user, mss) => {
+    const mssData = {
+        user: user,
+        mss: mss
+    }
+    listMassage.push(mssData);
+}
+
 const addOnlineUser = (newUser) => {
     let hasUser = false;
     for (const user of onlineUser) {
@@ -80,6 +88,16 @@ io.on('connection', socket => {
             waitingMatch: waitingMatch,
             playingMatch: playingMatch
         });
+    })
+    socket.on('message', data => {
+        const { user, mss } = data;
+        addMessage(user, mss);
+        io.emit('message', data);
+    })
+
+    socket.on('directMss',data => {
+        const  {user,room,mss} = data;
+        socket.to(room).emit('directMss',data);
     })
      
 })
